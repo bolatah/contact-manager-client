@@ -4,7 +4,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import {formDataJSON}   from '../models/postFormData';
+// import {formDataJSON}   from '../models/postFormData';
 
 export default function DataTable() {
     return (
@@ -20,14 +20,14 @@ export default function DataTable() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                      {formDataJSON.map((list, index) => (
+                     {/*  {formDataJSON.map((list, index) => (
                         <TableRow key={index}>
                             <TableCell>{list.id}</TableCell>
                             <TableCell>{list.name}</TableCell>
                             <TableCell>{list.email}</TableCell>
                             <TableCell>{list.message}</TableCell>
                         </TableRow>
-                      ))}
+                      ))} */}
                     </TableBody>
                 </Table>
             </TableContainer>
