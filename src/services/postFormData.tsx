@@ -1,7 +1,9 @@
-async function handleFormSubmit (e:any) { 
+
+
+async function handleFormSubmit (e) { 
     e.preventDefault();
-    const form:any = e.currentTarget;
-    const url:any = form.action
+    const form = e.currentTarget;
+    const url = form.action
     alert("The message was submitted");
   
     try {
@@ -36,7 +38,4 @@ async function postFormDataAsJson({url, formData}){
     return response.json();
   };
 
-
-
-
-  export {handleFormSubmit};
+export {handleFormSubmit};

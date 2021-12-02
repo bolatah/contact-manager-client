@@ -1,10 +1,7 @@
 import { Navigate } from "react-router";
-
 import {  Routes, Route } from "react-router-dom";
- 
 import { ContactForm } from "../components/contactForm";
-import { ContactList } from "../components/contactList";
-import DataTable from "./getContacts";
+import {ContactList} from "../components/contactList";
 
 export const AppRoutes = () => {
   return (
@@ -12,7 +9,6 @@ export const AppRoutes = () => {
         <Route path="/" element={<ContactForm />} />
         <Route path="/form" element={<ContactForm />} />
         <Route path="/list" element={<ContactList />} />
-        <Route path="/DataTable" element={<DataTable />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes> 
   );
