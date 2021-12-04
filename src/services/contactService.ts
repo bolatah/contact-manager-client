@@ -1,48 +1,35 @@
 import { Contact } from "../models/contact";
 
-export const saveContact = (contact: Contact)=> {
 
-}
-
-export const getContactList = async ():  Promise<Contact[]>=> {
-
-    return [];
-}
-
-export const getContactById =  async (id:number):  Promise<Contact>=> {
-
-    return { } as Contact;
-}
-/* async getContact(id){
-    return new Promise ((resolve, reject) => {
-        db.get(
-            'SELECT * FROM contacts where id=?',
-                [id],
-                (error, row) => {
-                    if(error){
-                        reject(error);
-                    } else {
-                        resolve(row);
-                    }
-                }
-        );
-    })
-}
- */
-
-
-
-export const deleteByContactId = async (id:number):  Promise<boolean> => {
-
-    return true;
-}
-
-/* app.get("/api/contacts/:id", async (request, response) => {
-    const id = parseInt(request.params.id);
-    const contact = await contactsManager.getContact(id);
-    if (contact) {
-      response.status(200).send(contact);
-    } else {
-      response.status(404).send();
+const url = "http://localhost:8000/api/contacts"
+export class ContactService {
+    saveContact = async (contact: Contact) => {
+        return await fetch(url, {
+            method: "POST",
+            headers: {
+                'Content-type': "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(contact)
+        });
     }
-  }); */
+
+    updateContact = (id: number, contact: Contact) => {
+
+    }
+
+    getContactList = async (): Promise<Contact[]> => {
+
+        return [];
+    }
+
+    getContactById = async (id: number): Promise<Contact> => {
+
+        return {} as Contact;
+    }
+
+    deleteContactById = async (id: number): Promise<Contact> => {
+
+        return {} as Contact;
+    }
+}

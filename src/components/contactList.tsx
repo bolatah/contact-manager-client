@@ -2,108 +2,99 @@
 
 import MaterialTable from "material-table";
 import React, { useEffect, useState } from "react";
+import { Contact } from "../models/contact";
+import { ContactService } from "../services/contactService";
 
 
-const url ="http://localhost:8000/api/contacts"
+const url = "http://localhost:8000/api/contacts"
 
 
 export function ContactList() {
-  
-  const [data, setData] =useState <any>([]);
+ 
+  const service = new ContactService();
+
+  const [data, setData] = useState<Contact[]>([]);
 
   const columns = [
-    {title: "name", field: "name"},
-    {title: "email", field: "email"},
-    {title: "message", field: "message"}
-    ];
-    
-  
-  const getData :any = ()  => {
-      fetch(url)
-      .then(resp => resp.json())
-      .then(json => setData(json))
-      .catch((error) => {
-      console.error(error);
-    });
+    { title: "name", field: "name" },
+    { title: "email", field: "email" },
+    { title: "message", field: "message" }
+  ];
+
+
+  const getData: any = async () => {
+    let fetchedDataReq = await fetch(url);
+    if (fetchedDataReq.ok) {
+      let fetchedData = await fetchedDataReq.json();
+      setData(fetchedData);
+    } else {
+      // log erro
+    }
   };
 
   useEffect(() => {
     getData();
   }, []);
 
-  return(
+  const onAdd = async (newData: Contact) => {
+    let req = await service.saveContact(newData)
 
-<MaterialTable
-    title="Contact List"
-    columns={columns}
-    data={data}
-    options={{ actionsColumnIndex: -1, addRowPosition: "first" }}
-    editable={{
-      
-      onRowAdd: (newData: any) => 
-      new Promise((resolve, reject) => {
-        setTimeout(() => {
-          fetch(url, {
-            method: "POST",
-            headers: {
-              'Content-type': "application/json",
-              "Accept": "application/json"
-            },
-            body: JSON.stringify(newData)
-          }).then(resp => resp.json())
-            .then(() => {
-              getData();
-              resolve('ok');
-            })
-            .catch((error) => {
-              reject(error);
-            });
-        }, 1000)
-      }),
-      
-      onRowUpdate: (newData , oldData) => 
-      new Promise((resolve, reject) => {
-        setTimeout(() => {
-         
-          fetch(url + "/" + oldData.id, {
-            method: "PUT",
-            headers: {
-              'Content-type': "application/json",
-              "Accept": "application/json"
-            }
-          })
-            .then(resp => resp.json())
-            .then(() => {
-              getData(); 
-              resolve("ok");
-            })
-            .catch((error) => {
-              reject(error);
-            });
-        }, 1000)
-      }),
+    if (req.ok) {
+      await getData()
+    } else {
+      // todo notification to user
+    }
+  }
 
-      onRowDelete: (oldData: any) =>
-       new Promise((resolve, reject) => {
-        setTimeout(() => {
-          fetch(url + "/" + oldData.id, {
-            method: "DELETE",
-            headers: {
-              'Content-type': "application/json",
-              "Accept": "application/json"
-            },
-          }).then(resp => resp.json())
-            .then(() => {
-              getData();
-              resolve("ok");
-            }).catch((error) => {
-              reject(error);
-            });
-        }, 1000)
-      }),
-    }}
-  />
-  )};
+  const onUpdate = async (newData, oldData) => {
+    let updateReq = await fetch(url + "/" + oldData.id, {
+      method: "PUT",
+      headers: {
+        'Content-type': "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(newData)
+    });
+
+    if (updateReq.ok) {
+      await getData();
+    } else {
+
+      // todo notification to user
+    }
+  }
+
+  const onDelete = async (oldData: any) =>  { 
+        let req = await fetch(url + "/" + oldData.id, {
+          method: "DELETE",
+          headers: {
+            'Content-type': "application/json",
+            "Accept": "application/json"
+          },
+        });
+      
+        if (req.ok) {
+          await getData();
+        } else {
+    
+          // todo notification to user
+        }
+      }
+  return (
+
+    <MaterialTable
+      title="Contact List"
+      columns={columns}
+      data={data}
+      options={{ actionsColumnIndex: -1, addRowPosition: "first" }}
+      editable={{
+        onRowAdd: onAdd,
+        onRowUpdate: onUpdate,
+        onRowDelete: onDelete,
+      }}
+    />
+  )
+};
 
 
   // window.addEventListener('unhandledrejection', function(event) {
@@ -111,4 +102,3 @@ export function ContactList() {
   //   alert(event.promise); // [object Promise] - the promise that generated the error
   //   alert(event.reason); // Error: Whoops! - the unhandled error object
   // });
-  
