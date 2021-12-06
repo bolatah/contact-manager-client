@@ -16,6 +16,7 @@ export const ContactForm = () => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
+    formData.forEach((value, key) => (formData[key] = value));
     let contact = { name: formData["name"], email: formData["name"], message: formData["message"] } as Contact;
     let req = await service.saveContact(contact);
 
