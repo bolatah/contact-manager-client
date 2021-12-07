@@ -16,9 +16,11 @@ export const ContactForm = () => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
-    formData.forEach((value, key) => (formData[key] = value));
-    let contact = { name: formData["name"], email: formData["name"], message: formData["message"] } as Contact;
-    let req = await service.saveContact(contact);
+    let postData = {};
+    formData.forEach((value, key) => { 
+      postData[key] = value; 
+    }); 
+    let req = await service.saveContact(postData as Contact);
 
     if (req.ok) {
       navigate("/list");
@@ -26,7 +28,7 @@ export const ContactForm = () => {
   };
 
   return (
-    <Box component="form" /* noValidate  */ action="http://localhost:8000/api/contacts" method="POST" onSubmit={handleFormSubmit} >
+    <Box component="form" onSubmit={handleFormSubmit} >
       <FormControl fullWidth required >
         <TextField type="text" id="Name" name="name" placeholder="Name" maxRows="1" required sx={{ marginBottom: 3 }} />
         <TextField type="email" id="Email" name="email" placeholder="Email" maxRows="1" required sx={{ marginBottom: 3 }} />

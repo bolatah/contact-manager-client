@@ -1,10 +1,10 @@
 import { Contact } from "../models/contact";
 
+const apiBaseUrl = `${process.env.REACT_APP_API}/contacts`;
 
-const url = "http://localhost:8000/api/contacts"
 export class ContactService {
     saveContact = async (contact: Contact) => {
-        return await fetch(url, {
+        return await fetch(apiBaseUrl, {
             method: "POST",
             headers: {
                 'Content-type': "application/json",
@@ -14,13 +14,19 @@ export class ContactService {
         });
     }
 
-    updateContact = (id: number, contact: Contact) => {
-
+    updateContact = async (id: number, contact: Contact): Promise<Response> => {
+        return await fetch(apiBaseUrl + "/" + id, {
+            method: "PUT",
+            headers: {
+                'Content-type': "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(contact)
+        });
     }
 
-    getContactList = async (): Promise<Contact[]> => {
-
-        return [];
+    getContactList = async (): Promise<Response> => {
+        return await fetch(apiBaseUrl);
     }
 
     getContactById = async (id: number): Promise<Contact> => {
@@ -28,8 +34,13 @@ export class ContactService {
         return {} as Contact;
     }
 
-    deleteContactById = async (id: number): Promise<Contact> => {
-
-        return {} as Contact;
+    deleteContactById = async (id: number): Promise<Response> => {
+        return await fetch(apiBaseUrl + "/" + id, {
+            method: "DELETE",
+            headers: {
+                'Content-type': "application/json",
+                "Accept": "application/json"
+            },
+        });
     }
 }
