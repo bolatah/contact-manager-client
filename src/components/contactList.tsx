@@ -1,9 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
+
 
 import MaterialTable from "material-table";
 import React, { useEffect, useState } from "react";
 import { Contact } from "../models/contact";
 import { ContactService } from "../services/contactService";
+
+
 
 export function ContactList() {
   const service = new ContactService();
@@ -11,9 +15,12 @@ export function ContactList() {
   const [data, setData] = useState<Contact[]>([]);
 
   const columns = [
-    { title: "name", field: "name" },
-    { title: "email", field: "email" },
-    { title: "message", field: "message" },
+    { title: "name", field: "name" , 
+    /* validate : rowData  => rowData.name.length < 2 ? { isValid: false, helperText: 'Name must be longer than 2 characters' } : true, */},
+    { title: "email", field: "email" ,
+    /* validate: rowData => rowData.email.match(/^w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/) ? true : {isValid: false, helperText: "Please include an '@'"}, */},
+    { title: "message", field: "message",
+   /*  validate : rowData => rowData.message.length < 5 ? {isValid:false, helperText: 'Message must be longer than 5 characters' } : true,  */}
   ];
 
   const getData: any = async () => {
@@ -22,7 +29,7 @@ export function ContactList() {
       let fetchedData = await fetchedDataReq.json();
       setData(fetchedData);
     } else {
-      // log erro
+      // log error
     }
   };
 
@@ -31,23 +38,41 @@ export function ContactList() {
   }, []);
 
   const onAdd = async (newData: Contact) => {
-    let req = await service.saveContact(newData);
-
-    if (req.ok) {
-      await getData();
+  if (newData.name.length > 2 ) {
+    if (newData.email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)) {
+      if (newData.message.length > 4) {
+        let req = await service.saveContact(newData);
+        if (req.ok) {
+          await getData();
+        };
+      } else {
+      alert('Message must be at least 4 characters')
+      };
     } else {
-      // todo notification to user
-    }
+    alert('Email must include "@"')
+    };
+  } else {
+    alert('Name bust be longer than 2 characters');
   };
+};
 
   const onUpdate = async (newData, oldData) => {
-    let req = await service.updateContact(oldData.id, newData);
-
-    if (req.ok) {
-      await getData();
+  if (newData.name.length > 2 ) {
+    if (newData.email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)) {
+      if (newData.message.length > 4) {
+        let req = await service.updateContact(oldData.id, newData);
+        if (req.ok) {
+          await getData();
+        }; 
+      } else {
+        alert('Message must be at least 4 characters')
+        };
+      } else {
+      alert('A proper mail must be given')
+      };
     } else {
-      // todo notification to user
-    }
+      alert('Name must be longer than 2 characters');
+    };
   };
 
   const onDelete = async (oldData: any) => {
@@ -73,9 +98,3 @@ export function ContactList() {
     />
   );
 }
-
-// window.addEventListener('unhandledrejection', function(event) {
-//   // the event object has two special properties:
-//   alert(event.promise); // [object Promise] - the promise that generated the error
-//   alert(event.reason); // Error: Whoops! - the unhandled error object
-// });
