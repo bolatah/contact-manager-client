@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {Link} from 'react-router-dom';
-import { styled, useTheme} from '@mui/material/styles';
+import { Link } from 'react-router-dom';
+import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
@@ -11,21 +11,16 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import Button from '@mui/material/Button';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-// import ListItemButton from '@mui/material/ListItemButton';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
-// import MailIcon from '@mui/icons-material/Mail';
-// import FormControl from '@mui/material/FormControl';
-// import OutlinedInput from '@mui/material/OutlinedInput';
-// import TextField from '@mui/material/TextField';
-// import Button from '@mui/material/Button';
- import { AppRoutes } from "./routes/routes";
-// import {handleFormSubmit} from "./services/postFormData";
-// import { ContactForm } from './components/contactForm';
+// import Register from '../components/register';
+// import Login from '../components/login';
+
 
 const drawerWidth = 240;
 
@@ -78,7 +73,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
-export default function PersistentDrawerLeft() {
+export default function ContactManagerApp() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -107,9 +102,13 @@ export default function PersistentDrawerLeft() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             Contact Manager
           </Typography>
+          {/*  <Button color="inherit" component={Link} to="/login">
+            Login
+          </Button> */}
+          <Button color="inherit" component={Link} to="/"> Log Out </Button>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -131,24 +130,23 @@ export default function PersistentDrawerLeft() {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <List> 
-          <ListItem component={Link} to="form" key="formItem">
-            <ListItemIcon> 
+        <List>
+          <ListItem component={Link} to="/form" key="formItem">
+            <ListItemIcon>
               <InboxIcon />
             </ListItemIcon>
             <ListItemText primary="Contact Form" />
           </ListItem>
-          <ListItem component={Link} to="list" key="listItem">
-            <ListItemIcon> 
+          <ListItem component={Link} to="/list" key="listItem">
+            <ListItemIcon>
               <InboxIcon />
             </ListItemIcon>
             <ListItemText primary="Contact List" />
           </ListItem>
-        </List> 
+        </List>
       </Drawer>
       <Main open={open}>
         <DrawerHeader />
-          <AppRoutes />
       </Main>
     </Box>
   );

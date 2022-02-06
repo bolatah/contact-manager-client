@@ -17,9 +17,9 @@ export const ContactForm = () => {
     const form = e.currentTarget;
     const formData = new FormData(form);
     let postData = {};
-    formData.forEach((value, key) => { 
-      postData[key] = value; 
-    }); 
+    formData.forEach((value, key) => {
+      postData[key] = value;
+    });
     let req = await service.saveContact(postData as Contact);
 
     if (req.ok) {
@@ -28,8 +28,8 @@ export const ContactForm = () => {
   };
 
   return (
-    <Box component="form" onSubmit={handleFormSubmit} >
-      <FormControl fullWidth required >
+    <Box component="form" onSubmit={handleFormSubmit} style={{ margin: "0 auto", width: "220px", marginTop: "100px" }}>
+      <FormControl required >
         <TextField type="text" id="Name" name="name" placeholder="Name" maxRows="1" required sx={{ marginBottom: 3 }} />
         <TextField type="email" id="Email" name="email" placeholder="Email" maxRows="1" required sx={{ marginBottom: 3 }} />
         <TextField type="message" id="Message" name="message" placeholder="Message" sx={{ marginBottom: 3 }} required multiline />
