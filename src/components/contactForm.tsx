@@ -11,7 +11,6 @@ export const ContactForm = () => {
   const navigate = useNavigate();
   const service = new ContactService();
 
-
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -20,15 +19,14 @@ export const ContactForm = () => {
     formData.forEach((value, key) => {
       postData[key] = value;
     });
-    let req = await service.saveContact(postData as Contact);
-
-    if (req.ok) {
+    let res = await service.saveContact(postData as Contact);
+    if (res.ok) {
       navigate("/list");
     }
   };
 
   return (
-    <Box component="form" onSubmit={handleFormSubmit} style={{ margin: "0 auto", width: "220px", marginTop: "100px" }}>
+    <Box /* action="http://localhost:8000/api/contacts"  */ component="form" onSubmit={handleFormSubmit} style={{ margin: "0 auto", width: "220px", marginTop: "100px" }}>
       <FormControl required >
         <TextField type="text" id="Name" name="name" placeholder="Name" maxRows="1" required sx={{ marginBottom: 3 }} />
         <TextField type="email" id="Email" name="email" placeholder="Email" maxRows="1" required sx={{ marginBottom: 3 }} />

@@ -1,4 +1,3 @@
-import Box from "@mui/material/Box";
 import React from "react";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
@@ -25,31 +24,31 @@ const Register = () => {
     formData.forEach((value, key) => {
       postData[key] = value;
     });
-    let req = await service.saveUser(postData as User);
+    let res = await service.saveUser(postData as User);
 
-    if (req.ok) {
+    if (res.ok) {
       login().then(() => {
-        navigate((state as StateType)?.path || "/contactManagerApp");
+        navigate((state as StateType)?.path || "/login");
       });
     }
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    let postData = {};
-    formData.forEach((value, key) => {
-      postData[key] = value;
-    });
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+  //   const form = e.currentTarget;
+  //   const formData = new FormData(form);
+  //   let postData = {};
+  //   formData.forEach((value, key) => {
+  //     postData[key] = value;
+  //   });
 
-    let req = await service.getUser(postData as User);
-    if (req.ok) {
-      login().then(() => {
-        navigate((state as StateType)?.path || "/contactManagerApp");
-      })
-    }
-  };
+  //   let req = await service.getUser(postData as User);
+  //   if (req.ok) {
+  //     login().then(() => {
+  //       navigate((state as StateType)?.path || "/contactManagerApp");
+  //     })
+  //   }
+  // };
 
 
 
@@ -62,6 +61,26 @@ const Register = () => {
           id="username"
           name="username"
           placeholder="Name"
+          maxRows="1"
+          required
+          sx={{ marginBottom: 3 }}
+        />
+        <TextField
+          label="email"
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Email"
+          maxRows="1"
+          required
+          sx={{ marginBottom: 3 }}
+        />
+        <TextField
+          label="phone"
+          type="tel"
+          id="phone"
+          name="phone"
+          placeholder="Phone"
           maxRows="1"
           required
           sx={{ marginBottom: 3 }}
@@ -80,9 +99,9 @@ const Register = () => {
           <Button type="submit" >
             Register
           </Button>
-          <Button type="submit" onSubmit={handleLogin} >
+          {/*  <Button type="submit" onSubmit={handleLogin} >
             login
-          </Button>
+          </Button> */}
         </span>
       </FormControl></form>
 

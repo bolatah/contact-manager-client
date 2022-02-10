@@ -22,8 +22,8 @@ ReactDOM.render(
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
           <Route path="/contactManagerApp" element={<RequireAuth><ContactManagerApp /></RequireAuth>} />
           <Route path="/form" element={<RequireAuth><ContactForm /></RequireAuth>} />

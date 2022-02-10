@@ -3,14 +3,18 @@ import { Contact } from "../models/contact";
 const apiBaseUrl = `${process.env.REACT_APP_API}/contacts`;
 
 export class ContactService {
+    
     saveContact = async (contact: Contact) => {
         return await fetch(apiBaseUrl, {
             method: "POST",
             headers: {
                 'Content-type': "application/json",
-                "Accept": "application/json"
+                "Accept": "application/json",
+                "x-access-token" : JSON.stringify(window.localStorage.getItem("x-access-token")),
+                "x-access-token-expiration": JSON.stringify(localStorage.getItem("x-access-token-expiration")),
+
             },
-            body: JSON.stringify(contact)
+            body: JSON.stringify(contact), 
         });
     }
 

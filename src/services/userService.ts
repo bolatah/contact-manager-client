@@ -5,9 +5,8 @@ const apiBaseUrl = `${process.env.REACT_APP_API}/users`;
 export class UserService {
 
   saveUser = async (user: User) : Promise<Response> => {
-    return await fetch(apiBaseUrl, {
+    return await fetch(`${apiBaseUrl}/register`, {
       method: "POST",
-     /*  credentials: 'include', */
       headers: {
         "Content-type": "application/json",
        "Accept": "application/json",
@@ -16,16 +15,35 @@ export class UserService {
     });
   };
 
-  getUser = async (user: User) : Promise<Response> => {
-    return await fetch(`${apiBaseUrl}/login`, {
+  getUser = async (user) : Promise<Response> => {
+    
+    const res = await fetch(`${apiBaseUrl}/login`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
          "Accept": "application/json",
+
         },
-        body: JSON.stringify(user),
-      });
-    };
+        body: JSON.stringify({ 
+          username: user.username,
+         password :user.password,
+        }
+          ),
+      })
+        if(res.ok) { 
+          res.json()
+          .then((user)=>{
+            const nowTime = Date.now()
+            window.localStorage.setItem("x-access-token", user.token)
+            window.localStorage.setItem(
+              "x-access-token-expiration",
+            `${nowTime} * 60 * 60 * 1000`
+            )
+          })
+        }
+        else {console.log("Authentication failed")}
+    ; return res
+  }
  
 
   // updateUser = async (id: number, user: User): Promise<Response> => {
