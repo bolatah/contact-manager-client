@@ -2,17 +2,19 @@ import { Contact } from "../models/contact";
 
 const apiBaseUrl = `${process.env.REACT_APP_API}/contacts`;
 
+
 export class ContactService {
-    
+
     saveContact = async (contact: Contact) => {
+
         return await fetch(apiBaseUrl, {
             method: "POST",
-            headers: {
-                'Content-type': "application/json",
+            credentials: "include",
+            headers : {
+                "Content-type": "application/json",
                 "Accept": "application/json",
-                "x-access-token" : JSON.stringify(window.localStorage.getItem("x-access-token")),
-                "x-access-token-expiration": JSON.stringify(localStorage.getItem("x-access-token-expiration")),
-
+               "x-access-token" : `${window.localStorage.getItem("x-access-token")}`, 
+                "x-access-token-expiration": `${window.localStorage.getItem("x-access-token-expiration")}`, 
             },
             body: JSON.stringify(contact), 
         });
@@ -21,16 +23,27 @@ export class ContactService {
     updateContact = async (id: number, contact: Contact): Promise<Response> => {
         return await fetch(apiBaseUrl + "/" + id, {
             method: "PUT",
+            credentials: "include",
             headers: {
                 'Content-type': "application/json",
-                "Accept": "application/json"
+                "Accept": "application/json",
+                "x-access-token" : `${window.localStorage.getItem("x-access-token")}`, 
+                "x-access-token-expiration": `${window.localStorage.getItem("x-access-token-expiration")}`, 
             },
             body: JSON.stringify(contact)
         });
     }
 
     getContactList = async (): Promise<Response> => {
-        return await fetch(apiBaseUrl);
+        return await fetch(apiBaseUrl, {
+            credentials: "include",
+            headers : {
+                "Content-type": "application/json",
+                "Accept": "application/json",
+               "x-access-token" : `${window.localStorage.getItem("x-access-token")}`, 
+                "x-access-token-expiration": `${window.localStorage.getItem("x-access-token-expiration")}`, 
+            },
+        });
     }
 
     getContactById = async (id: number): Promise<Contact> => {
@@ -41,9 +54,12 @@ export class ContactService {
     deleteContactById = async (id: number): Promise<Response> => {
         return await fetch(apiBaseUrl + "/" + id, {
             method: "DELETE",
-            headers: {
-                'Content-type': "application/json",
-                "Accept": "application/json"
+            credentials: "include",
+            headers : {
+                "Content-type": "application/json",
+                "Accept": "application/json",
+               "x-access-token" : `${window.localStorage.getItem("x-access-token")}`, 
+                "x-access-token-expiration": `${window.localStorage.getItem("x-access-token-expiration")}`, 
             },
         });
     }

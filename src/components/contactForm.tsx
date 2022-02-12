@@ -23,7 +23,6 @@ export const ContactForm = () => {
       postData[key] = value;
     });
     let res = await service.saveContact(postData as Contact);
-    console.log(postData);
     if (res.ok) {
       toast.success(`${Object.values(postData)[0]} will be added.`);
       setTimeout(() => {

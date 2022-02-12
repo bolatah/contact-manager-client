@@ -69,7 +69,7 @@ export default class UploadPic extends Component<any, any> {
             Upload an image
           </Button>
         </Stack>
-        <ToastContainer position="bottom-left" autoClose={3000} />
+        <ToastContainer position="bottom-left" autoClose={1000} />
       </>
     );
   }
