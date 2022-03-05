@@ -9,16 +9,12 @@ import { Link } from "react-router-dom";
 
 import Login from "../components/login";
 
-// const imageURL = process.env.IMAGE_URL;
+const imageURL = process.env.REACT_APP_IMAGE_URL;
 
 export default function LaunchCard() {
   return (
     <Card /* sx={{ maxWidth: 345 }} */>
-      <CardMedia
-        component="img"
-        height="140"
-        image="https://www.spirit-of-the-sea.com/fileadmin//user_upload/Slider/Home/3.jpg"
-      />
+      <CardMedia component="img" height="140" image={imageURL} />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
           Contact Manager

@@ -24,6 +24,8 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
+    "src",
+    "src/repository",
+    "../ignore/repositoryUploadPic.js"
   ]
 }

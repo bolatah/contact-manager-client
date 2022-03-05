@@ -8,12 +8,14 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
-import { ContactForm } from "./components/contactForm";
-import { ContactList } from "./components/contactList";
+import { ContactForm } from "./pages/ContactForm";
+import { ContactList } from "./pages/ContactList";
 import ContactManagerApp from "./pages/ContactManagerApp";
 import LaunchCard from "./pages/LaunchCard";
-import Register from "./components/register";
+import Register from "./pages/Register";
 import useAuth, { AuthProvider } from "./context/useAuth";
+
+require("dotenv").config();
 
 function RequireAuth({ children }) {
   const { authed } = useAuth();

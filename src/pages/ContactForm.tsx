@@ -1,14 +1,14 @@
+import React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
-import Stack from "@mui/material/Stack";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 import { Contact } from "../models/contact";
 import { ContactService } from "../services/contactService";
-import UploadPic from "./uploadPic";
+import { showToast } from "repository/utils";
 
 export const ContactForm = () => {
   const navigate = useNavigate();
@@ -22,12 +22,18 @@ export const ContactForm = () => {
     formData.forEach((value, key) => {
       postData[key] = value;
     });
+    // const fileObject = postData["file"];
+    // console.log(fileObject);
     let res = await service.saveContact(postData as Contact);
-    if (res.ok) {
-      toast.success(`${Object.values(postData)[0]} will be added.`);
-      setTimeout(() => {
-        navigate("/list");
-      }, 2000);
+    try {
+      if (res.ok) {
+        showToast("success", `${postData["name"]} will be added.`);
+        setTimeout(() => {
+          navigate("/list");
+        }, 2000);
+      }
+    } catch {
+      showToast("error", `${postData["name"]} can't be added.`);
     }
   };
 
@@ -60,6 +66,25 @@ export const ContactForm = () => {
           sx={{ marginBottom: 3 }}
         />
         <TextField
+          type="tel"
+          id="phone"
+          name="phone"
+          label="phone"
+          placeholder="phone"
+          maxRows="1"
+          required
+          sx={{ marginBottom: 3 }}
+        />
+        <TextField
+          type="file"
+          id="File"
+          name="file"
+          // label="Image"
+          maxRows="1"
+          required
+          sx={{ marginBottom: 3 }}
+        />
+        <TextField
           type="message"
           id="Message"
           name="message"
@@ -69,22 +94,8 @@ export const ContactForm = () => {
           required
           multiline
         />
-        <Stack
-          direction="row"
-          alignItems="center"
-          spacing={2}
-          sx={{ marginBottom: 3 }}
-        >
-          <UploadPic />{" "}
-        </Stack>
-        <Button
-          type="submit"
-          variant="outlined"
-          /*  onClick={() => {
-            toast.success(`${} will be added.`);
-          }} */
-        >
-          {" "}
+
+        <Button type="submit" variant="outlined">
           Submit
         </Button>
       </FormControl>

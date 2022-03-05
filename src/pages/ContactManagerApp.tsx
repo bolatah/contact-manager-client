@@ -101,9 +101,7 @@ export default function ContactManagerApp() {
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             Contact Manager
           </Typography>
-          {/*  <Button color="inherit" component={Link} to="/login">
-            Login
-          </Button> */}
+
           <Button color="inherit" component={Link} to="/">
             {" "}
             Log Out{" "}

@@ -2,10 +2,11 @@ import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import { useLocation, useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 import { UserService } from "../services/userService";
 import useAuth from "../context/useAuth";
+import { showToast } from "../repository/utils";
 
 type StateType = {
   path: string;
@@ -17,10 +18,6 @@ const Login = () => {
   const { login } = useAuth();
   const { state } = useLocation();
 
-  const openToast = () => {
-    toast.success("Your are logging in");
-  };
-
   const handleLogin = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -29,17 +26,18 @@ const Login = () => {
     formData.forEach((value, key) => {
       postFormData[key] = value;
     });
-    console.log(postFormData);
 
     let res = await service.getUser(postFormData);
-    console.log(res);
-    console.log(res.headers);
+    // let tokenAuth = await service.refreshToken(localStorage);
     if (res.ok) {
+      showToast("success", "You are logged in");
       setTimeout(() => {
         login().then(() => {
           navigate((state as StateType)?.path || "/contactManagerApp");
         });
       }, 2000);
+    } else {
+      showToast("error", "Failure");
     }
   };
 
@@ -70,14 +68,18 @@ const Login = () => {
             autoComplete="off"
           />
           <span>
-            <Button type="submit" onClick={openToast}>
-              {" "}
+            <Button
+              type="submit"
+              /*   onClick={() => {
+                showToast("success", "You are logged in");
+              }} */
+            >
               Login
             </Button>
           </span>
         </FormControl>
       </form>
-      <ToastContainer position="top-left" autoClose={2000} />
+      <ToastContainer />
     </>
   );
 };
