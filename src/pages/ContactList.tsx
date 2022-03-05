@@ -8,6 +8,8 @@ import { Contact } from "../models/contact";
 import { ContactService } from "../services/contactService";
 import { showToast } from "../repository/utils";
 
+const apiBaseUrl = `${process.env.REACT_APP_API}/contacts`;
+
 export function ContactList() {
   const service = new ContactService();
 
@@ -19,7 +21,7 @@ export function ContactList() {
       field: "path",
       render: (rowData) => (
         <img
-          src={rowData.path}
+          src={`data:image/jpeg;base64,${rowData.img}`} width="45"
           // style={{ width: 40, borderRadius: "50%" }}
         />
       ),
