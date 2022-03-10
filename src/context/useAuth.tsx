@@ -1,6 +1,16 @@
 import React, { createContext, useState, useContext } from "react";
 
-export const AuthContext = createContext();
+interface AuthContextInterface {
+  authed: boolean;
+  login: () => void;
+  logout: () => void;
+}
+
+export const AuthContext = createContext<AuthContextInterface>({
+  authed: false,
+  login: () => false,
+  logout: () => true,
+});
 
 function useAuth() {
   const [authed, setAuthed] = useState(false);
@@ -8,13 +18,13 @@ function useAuth() {
   return {
     authed,
     login() {
-      return new Promise((res) => {
+      return new Promise<void>((res) => {
         setAuthed(true);
         res();
       });
     },
     logout() {
-      return new Promise((res) => {
+      return new Promise<void>((res) => {
         setAuthed(false);
         res();
       });

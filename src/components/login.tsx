@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 import { UserService } from "../services/userService";
 import useAuth from "../context/useAuth";
 import { showToast } from "../repository/utils";
+// import { User } from "../models/user";
 
 type StateType = {
   path: string;
@@ -27,18 +28,17 @@ const Login = () => {
       postFormData[key] = value;
     });
 
-    let res = await service.getUser(postFormData);
+    await service.getUser(postFormData);
     // let tokenAuth = await service.refreshToken(localStorage);
-    if (res.ok) {
-      showToast("success", "You are logged in");
-      setTimeout(() => {
-        login().then(() => {
-          navigate((state as StateType)?.path || "/contactManagerApp");
-        });
-      }, 2000);
-    } else {
-      showToast("error", "Failure");
-    }
+
+    showToast("success", "You are logged in");
+    setTimeout(() => {
+      login();
+      navigate((state as StateType)?.path || "/contactManagerApp");
+    }, 2000);
+    // } else {
+    //   showToast("error", "Login failed");
+    // }
   };
 
   return (

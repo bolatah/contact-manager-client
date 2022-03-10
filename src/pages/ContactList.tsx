@@ -1,14 +1,9 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react-hooks/rules-of-hooks */
-
 import MaterialTable from "material-table";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { Contact } from "../models/contact";
 import { ContactService } from "../services/contactService";
 import { showToast } from "../repository/utils";
-
-const apiBaseUrl = `${process.env.REACT_APP_API}/contacts`;
 
 export function ContactList() {
   const service = new ContactService();
@@ -21,8 +16,9 @@ export function ContactList() {
       field: "path",
       render: (rowData) => (
         <img
-          src={`data:image/jpeg;base64,${rowData.img}`} width="45"
-          // style={{ width: 40, borderRadius: "50%" }}
+          src={`data:image/jpeg;base64,${rowData.img}`}
+          width="45"
+          alt="contact"
         />
       ),
     },
@@ -46,9 +42,10 @@ export function ContactList() {
 
   const getData: any = async () => {
     let fetchedDataReq = await service.getContactList();
-
-    if (fetchedDataReq.ok) {
-      let fetchedData = await fetchedDataReq.json();
+    console.log(fetchedDataReq);
+    if (fetchedDataReq) {
+      console.log(fetchedDataReq);
+      const fetchedData = await fetchedDataReq["data"];
       setData(fetchedData.reverse());
     } else {
       console.log("Error while getting data");
@@ -57,7 +54,7 @@ export function ContactList() {
 
   useEffect(() => {
     getData();
-  }, []);
+  });
 
   const onAdd = async (newData: Contact) => {
     try {
@@ -68,7 +65,7 @@ export function ContactList() {
           if (newData.message.length > 4) {
             if (newData.phone.toString().length > 5) {
               let req = await service.saveContact(newData);
-              if (req.ok) {
+              if (req) {
                 showToast("success", `${newData.name} was added `);
                 await getData();
               }

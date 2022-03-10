@@ -37,24 +37,18 @@ const Register = () => {
     let res = await service.saveUser(postData as User);
 
     if (inputPassword.value === inputConfirmPassword.value) {
-      if (res.ok) {
+      if (res.status === 201) {
+        showToast("success", `${postData["username"]} is registered.`);
         setTimeout(() => {
-          showToast("success", `${postData["username"]} is registered.`);
-          login().then(() => {
-            navigate((state as StateType)?.path || "/login");
-          });
-        }, 1000);
-      } else {
-        showToast(
-          "error",
-          `${postData["username"]} or ${postData["email"]} already exists.`
-        );
+          login();
+          navigate((state as StateType)?.path || "/login");
+        }, 2000);
       }
+      showToast("error", `User already exists.`);
     } else {
       showToast("error", "password don't match");
     }
   };
-
   return (
     <>
       <form

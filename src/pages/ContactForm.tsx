@@ -5,7 +5,7 @@ import FormControl from "@mui/material/FormControl";
 import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import { ToastContainer } from "react-toastify";
- 
+
 import { ContactService } from "../services/contactService";
 import { showToast } from "repository/utils";
 
@@ -16,10 +16,10 @@ export const ContactForm = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
-    const formData = new FormData(form); 
+    const formData = new FormData(form);
     let res = await service.saveContact(formData);
     try {
-      if (res.ok) {
+      if (res) {
         showToast("success", `Contact will be added.`);
         setTimeout(() => {
           navigate("/list");
@@ -72,7 +72,6 @@ export const ContactForm = () => {
           type="file"
           id="File"
           name="file"
-          // label="Image"
           maxRows="1"
           required
           sx={{ marginBottom: 3 }}

@@ -144,6 +144,12 @@ export default function ContactManagerApp() {
             </ListItemIcon>
             <ListItemText primary="Contact List" />
           </ListItem>
+          <ListItem component={Link} to="/list" key="listItem">
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary="Contact List (EX-IM)" />
+          </ListItem>
         </List>
       </Drawer>
       <Main open={open}>
