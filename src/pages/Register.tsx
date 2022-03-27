@@ -21,22 +21,24 @@ const Register = () => {
 
   const handleRegister = async (e: any) => {
     e.preventDefault();
-
-    const inputPassword = document.getElementById(
-      "password"
-    ) as HTMLInputElement;
-    const inputConfirmPassword = document.getElementById(
-      "confirm-password"
-    ) as HTMLInputElement;
-
+ 
     const formData = new FormData(e.currentTarget);
-    let postData = {};
+
+
+    let postData = {} as any;
     formData.forEach((value, key) => {
       postData[key] = value;
     });
-    let res = await service.saveUser(postData as User);
 
-    if (inputPassword.value === inputConfirmPassword.value) {
+    if(postData.confirmPassword !== postData.password){
+      showToast("error", "password don't match");
+      return;
+    }
+
+    console.log("register", e.currentTarget, formData , postData);
+
+    let res = await service.saveUser(postData as User);
+ 
       if (res.status === 201) {
         showToast("success", `${postData["username"]} is registered.`);
         setTimeout(() => {
@@ -44,10 +46,7 @@ const Register = () => {
           navigate((state as StateType)?.path || "/login");
         }, 2000);
       }
-      showToast("error", `User already exists.`);
-    } else {
-      showToast("error", "password don't match");
-    }
+      showToast("error", `User already exists.`); 
   };
   return (
     <>
@@ -100,7 +99,7 @@ const Register = () => {
             label="confirm password"
             type="password"
             id="confirm-password"
-            name="confirm-password"
+            name="confirmPassword"
             placeholder="confirm password"
             maxRows="1"
             required

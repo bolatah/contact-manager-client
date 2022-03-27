@@ -22,21 +22,12 @@ const Login = () => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
-    let postFormData = {};
+    let postFormData = {} as any;
     formData.forEach((value, key) => {
       postFormData[key] = value;
     });
 
-    await service.getUser(postFormData);
-
-    showToast("success", "You are logged in");
-    setTimeout(() => {
-      login();
-      navigate((state as StateType)?.path || "/contactManagerApp");
-    }, 2000);
-    // } else {
-    //   showToast("error", "Login failed");
-    // }
+    login(postFormData.username, postFormData.password);  
   };
 
   return (

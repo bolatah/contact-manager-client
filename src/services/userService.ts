@@ -27,32 +27,25 @@ const privateInstance = axios.create({
   withCredentials: true,
 });
 
-export const UserService = () => {
-  const saveUser = async (user: User): Promise<Response> => {
+export class UserService {
+   saveUser = async (user: User): Promise<Response> => {
     return await publicInstance.post(`${apiBaseUrl}/register`, user);
   };
 
-  const getUser = async (user): Promise<void> => {
-    await publicInstance
+   loginUser = async (username: string, password: string): Promise<Response> => {
+    return await publicInstance
       .post(`${apiBaseUrl}/login`, {
-        username: user.username,
-        password: user.password,
-      })
-      .then((response) => {
-        localStorage.setItem("access-token", `${response.data.accessToken}`);
+        username,
+        password
       });
   };
-  const getUserList = async (): Promise<Response> => {
+   getUserList = async (): Promise<Response> => {
     return await privateInstance.get(apiBaseUrl);
   };
 
-  const deleteUserById = async (id: number): Promise<Response> => {
+   deleteUserById = async (id: number): Promise<Response> => {
     return await privateInstance.delete(apiBaseUrl + "/" + id);
-  };
-  return {
-    saveUser,
-    getUser,
-    getUserList,
-    deleteUserById,
-  };
-};
+  };  
+}
+
+export const userService = new UserService();
