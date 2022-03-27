@@ -11,7 +11,7 @@ import { showToast } from "repository/utils";
 
 export const ContactForm = () => {
   const navigate = useNavigate();
-  const service = new ContactService();
+  const service = ContactService();
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();

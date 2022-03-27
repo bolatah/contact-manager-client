@@ -1,12 +1,12 @@
 import MaterialTable from "material-table";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { Contact } from "../models/contact";
 import { ContactService } from "../services/contactService";
 import { showToast } from "../repository/utils";
 
 export function ContactList() {
-  const service = new ContactService();
+  const service = ContactService();
 
   const [data, setData] = useState<Contact[]>([]);
 
@@ -40,21 +40,19 @@ export function ContactList() {
     },
   ];
 
-  const getData: any = async () => {
+  const getData: any = useCallback(async () => {
     let fetchedDataReq = await service.getContactList();
-    console.log(fetchedDataReq);
     if (fetchedDataReq) {
-      console.log(fetchedDataReq);
       const fetchedData = await fetchedDataReq["data"];
       setData(fetchedData.reverse());
     } else {
       console.log("Error while getting data");
     }
-  };
+  }, [service]);
 
   useEffect(() => {
     getData();
-  });
+  }, [getData]);
 
   const onAdd = async (newData: Contact) => {
     try {

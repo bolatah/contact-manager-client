@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import { ToastContainer } from "react-toastify";
 import { User } from "../models/user";
-import useAuth from "../context/useAuth";
+//import useAuth from "../services/hooks/useAuth";
 import { UserService } from "../services/userService";
 import { showToast } from "../repository/utils";
 
@@ -15,8 +15,8 @@ type StateType = {
 
 const Register = () => {
   const navigate = useNavigate();
-  const service = new UserService();
-  const { login } = useAuth();
+  const service = UserService();
+  //const { authed } = useAuth();
   const { state } = useLocation();
 
   const handleRegister = async (e: any) => {
@@ -40,7 +40,7 @@ const Register = () => {
       if (res.status === 201) {
         showToast("success", `${postData["username"]} is registered.`);
         setTimeout(() => {
-          login();
+          // setAuthed(true);
           navigate((state as StateType)?.path || "/login");
         }, 2000);
       }

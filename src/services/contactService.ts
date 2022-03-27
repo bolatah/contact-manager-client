@@ -1,5 +1,6 @@
-import axios from "axios";
+//import useAxiosPrivate from "./hooks/useAxiosprivate";
 import { Contact } from "../models/contact";
+import axios from "axios";
 require("dotenv").config();
 
 const apiBaseUrl = `${process.env.REACT_APP_API}/contacts`;
@@ -8,44 +9,42 @@ const privateHeaderOptions = {
   "access-token": `${localStorage.getItem("access-token")}`,
 };
 
-const publicHeaderOptions = {
-  Accept: "application/json",
-};
+export const ContactService = () => {
+  const privateInstance = axios.create({
+    headers: privateHeaderOptions,
+    withCredentials: true,
+  });
 
-const headerOptions = {
-  ...privateHeaderOptions,
-  ...publicHeaderOptions,
-} as any;
-
-// const publicInstance = axios.create({
-//   baseURL: apiBaseUrl,
-//   headers: publicHeaderOptions,
-// });
-
-const privateInstance = axios.create({
-  baseURL: apiBaseUrl,
-  headers: headerOptions,
-  withCredentials: true,
-});
-
-export class ContactService {
-  saveContact = async (contact) => {
+  const saveContact = async (contact) => {
     return await privateInstance.post(apiBaseUrl, contact as Contact);
   };
 
-  updateContact = async (id: number, contact: Contact): Promise<Response> => {
+  const updateContact = async (
+    id: number,
+    contact: Contact
+  ): Promise<Response> => {
     return await privateInstance.put(apiBaseUrl + "/" + id, contact as Contact);
   };
 
-  getContactList = async (): Promise<Response> => {
+  const getContactList = async (): Promise<Response> => {
     return await privateInstance.get(apiBaseUrl);
   };
 
-  getContactById = async (id: number, contact: Contact): Promise<Contact> => {
+  const getContactById = async (
+    id: number,
+    contact: Contact
+  ): Promise<Contact> => {
     return await privateInstance.put(apiBaseUrl + "/" + id, contact as Contact);
   };
 
-  deleteContactById = async (id: number): Promise<Response> => {
+  const deleteContactById = async (id: number): Promise<Response> => {
     return await privateInstance.delete(apiBaseUrl + "/" + id);
   };
-}
+  return {
+    saveContact,
+    updateContact,
+    getContactList,
+    getContactById,
+    deleteContactById,
+  };
+};

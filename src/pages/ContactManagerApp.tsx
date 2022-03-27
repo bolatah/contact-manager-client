@@ -19,6 +19,8 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 
+import useAuth from "../services/hooks/useAuth";
+
 const drawerWidth = 240;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
@@ -72,7 +74,14 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export default function ContactManagerApp() {
   const theme = useTheme();
+  const { logout } = useAuth();
+
   const [open, setOpen] = React.useState(false);
+  //const [logout, setLogout] = React.useState(false);
+
+  // const useLogout = () => {
+  //       setLogout(() => logout());
+  // };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -102,9 +111,8 @@ export default function ContactManagerApp() {
             Contact Manager
           </Typography>
 
-          <Button color="inherit" component={Link} to="/">
-            {" "}
-            Log Out{" "}
+          <Button color="inherit" component={Link} to="/" onClick={logout}>
+            Log Out
           </Button>
         </Toolbar>
       </AppBar>

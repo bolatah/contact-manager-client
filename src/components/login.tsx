@@ -5,9 +5,8 @@ import TextField from "@mui/material/TextField";
 import { ToastContainer } from "react-toastify";
 
 import { UserService } from "../services/userService";
-import useAuth from "../context/useAuth";
+import useAuth from "../services/hooks/useAuth";
 import { showToast } from "../repository/utils";
-// import { User } from "../models/user";
 
 type StateType = {
   path: string;
@@ -15,7 +14,7 @@ type StateType = {
 
 const Login = () => {
   const navigate = useNavigate();
-  const service = new UserService();
+  const service = UserService();
   const { login } = useAuth();
   const { state } = useLocation();
 
@@ -29,7 +28,6 @@ const Login = () => {
     });
 
     await service.getUser(postFormData);
-    // let tokenAuth = await service.refreshToken(localStorage);
 
     showToast("success", "You are logged in");
     setTimeout(() => {
