@@ -1,51 +1,51 @@
-import { User } from "../models/user";
-import axios from "axios";
+import { IUser } from "../interfaces/user";
+import axios, { AxiosResponse } from "axios";
+import axiosPublic from "../api/axiosPublic";
+//mport useAxiosPrivate from "hooks/useAxiosPrivate";
+import axiosPrivate from "api/axiosPrivate";
+const usersUrl = `${process.env.REACT_APP_URL}/users`;
 
-// import useAxiosPrivate from "../services/hooks/useAxiosprivate";
-
-axios.defaults.withCredentials = true;
-
-const apiBaseUrl = `${process.env.REACT_APP_API}/users`;
-
-const privateHeaderOptions = {
-  "access-token": `${localStorage.getItem("access-token")}`,
+const SaveUser = async (user: IUser): Promise<AxiosResponse> => {
+  return await axiosPublic.post(`${usersUrl}/register`, user);
 };
 
-const publicHeaderOptions = {
-  "Content-Type": "application/json",
-  Accept: "application/json",
+const LoginUser = async (
+  username: string,
+  password: string
+): Promise<AxiosResponse> => {
+  return await axiosPublic.post(`${usersUrl}/login`, {
+    username,
+    password,
+    withCredentials: true,
+  });
 };
 
-const publicInstance = axios.create({
-  baseURL: apiBaseUrl,
-  headers: publicHeaderOptions,
-  withCredentials: true,
-});
+const HandleRefreshToken = async (): Promise<AxiosResponse> => {
+  return await axios.get(`${usersUrl}/refresh`, { withCredentials: true });
+};
 
-const privateInstance = axios.create({
-  headers: privateHeaderOptions,
-  withCredentials: true,
-});
+const LogoutUser = async (): Promise<AxiosResponse> => {
+  return await axiosPrivate.delete(`${usersUrl}/logout`, {});
+};
 
-export class UserService {
-   saveUser = async (user: User): Promise<Response> => {
-    return await publicInstance.post(`${apiBaseUrl}/register`, user);
-  };
+const GetUserList = async (): Promise<AxiosResponse> => {
+  return await axiosPrivate.get(usersUrl);
+};
 
-   loginUser = async (username: string, password: string): Promise<Response> => {
-    return await publicInstance
-      .post(`${apiBaseUrl}/login`, {
-        username,
-        password
-      });
-  };
-   getUserList = async (): Promise<Response> => {
-    return await privateInstance.get(apiBaseUrl);
-  };
+const DeleteUserById = async (id: number): Promise<AxiosResponse> => {
+  return await axiosPrivate.delete(usersUrl + "/" + id);
+};
+const HandleTest = async (): Promise<AxiosResponse> => {
+  return await axiosPublic.post(`${usersUrl}/test`);
+};
 
-   deleteUserById = async (id: number): Promise<Response> => {
-    return await privateInstance.delete(apiBaseUrl + "/" + id);
-  };  
-}
-
-export const userService = new UserService();
+const userService = {
+  SaveUser,
+  LoginUser,
+  HandleRefreshToken,
+  LogoutUser,
+  GetUserList,
+  DeleteUserById,
+  HandleTest,
+};
+export default userService;

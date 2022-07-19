@@ -6,27 +6,29 @@ import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import { ToastContainer } from "react-toastify";
 
-import { ContactService } from "../services/contactService";
+import contactService from "../services/contactService";
 import { showToast } from "repository/utils";
+import { AxiosError } from "axios";
 
 export const ContactForm = () => {
   const navigate = useNavigate();
-  const service = ContactService();
-
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
-    let res = await service.saveContact(formData);
+
     try {
-      if (res) {
+      let resp = await contactService.SaveContact(formData);
+      if (resp) {
         showToast("success", `Contact will be added.`);
         setTimeout(() => {
           navigate("/list");
         }, 2000);
       }
-    } catch {
-      showToast("error", `Contact can't be added.`);
+    } catch (err) {
+      const error = err as Error | AxiosError;
+      console.log(error);
+      showToast("error", error.message);
     }
   };
 

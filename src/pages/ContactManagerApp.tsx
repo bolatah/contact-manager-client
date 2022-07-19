@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -18,8 +18,12 @@ import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
-
-import useAuth from "../services/hooks/useAuth";
+import { ToastContainer } from "react-toastify";
+import { showToast } from "repository/utils";
+import userService from "../services/userService";
+import { UserContext, initialUserState } from "../context/userContext";
+import { useContext } from "react";
+import { AxiosError } from "axios";
 
 const drawerWidth = 240;
 
@@ -73,15 +77,32 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export default function ContactManagerApp() {
-  const theme = useTheme();
-  const { logout } = useAuth();
-
   const [open, setOpen] = React.useState(false);
-  //const [logout, setLogout] = React.useState(false);
+  const userContext = useContext(UserContext);
+  const theme = useTheme();
+  const navigate = useNavigate();
 
-  // const useLogout = () => {
-  //       setLogout(() => logout());
-  // };
+  const Logout = async () => {
+    try {
+      let resp = await userService.LogoutUser();
+      if (resp) {
+        userContext.userDispatch({
+          type: "logout",
+          payload: initialUserState,
+        });
+        showToast("success", "You are logged out");
+        setTimeout(() => {
+          navigate("/launchCard");
+        }, 2000);
+      }
+    } catch (err) {
+      const error = err as Error | AxiosError;
+      console.log(error);
+      showToast("error", "Logout is not successful");
+    }
+    // window.localStorage.removeItem("accessToken");
+    // window.localStorage.removeItem("refreshToken");
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -91,78 +112,80 @@ export default function ContactManagerApp() {
     setOpen(false);
   };
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <AppBar position="fixed" open={open}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: "36px",
-              ...(open && { display: "none" }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            Contact Manager
-          </Typography>
+    <>
+      <Box sx={{ display: "flex" }}>
+        <CssBaseline />
+        <AppBar position="fixed" open={open}>
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{
+                marginRight: "36px",
+                ...(open && { display: "none" }),
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ flexGrow: 1 }}
+            >
+              Contact Manager
+            </Typography>
 
-          <Button color="inherit" component={Link} to="/" onClick={logout}>
-            Log Out
-          </Button>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
+            <Button color="inherit" component={Link} to="/" onClick={Logout}>
+              Log Out
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          sx={{
             width: drawerWidth,
-            boxSizing: "border-box",
-          },
-        }}
-        variant="persistent"
-        anchor="left"
-        open={open}
-      >
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-          <ListItem component={Link} to="/form" key="formItem">
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary="Contact Form" />
-          </ListItem>
-          <ListItem component={Link} to="/list" key="listItem">
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary="Contact List" />
-          </ListItem>
-          <ListItem component={Link} to="/list" key="listItem">
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary="Contact List (EX-IM)" />
-          </ListItem>
-        </List>
-      </Drawer>
-      <Main open={open}>
-        <DrawerHeader />
-      </Main>
-    </Box>
+            flexShrink: 0,
+            "& .MuiDrawer-paper": {
+              width: drawerWidth,
+              boxSizing: "border-box",
+            },
+          }}
+          variant="persistent"
+          anchor="left"
+          open={open}
+        >
+          <DrawerHeader>
+            <IconButton onClick={handleDrawerClose}>
+              {theme.direction === "rtl" ? (
+                <ChevronRightIcon />
+              ) : (
+                <ChevronLeftIcon />
+              )}
+            </IconButton>
+          </DrawerHeader>
+          <Divider />
+          <List>
+            <ListItem component={Link} to="/form" key="formItem">
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary="Contact Form" />
+            </ListItem>
+            <ListItem component={Link} to="/list" key="listItem">
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary="Contact List" />
+            </ListItem>
+          </List>
+        </Drawer>
+        <Main open={open}>
+          <DrawerHeader />
+        </Main>
+      </Box>
+      <ToastContainer />
+    </>
   );
 }

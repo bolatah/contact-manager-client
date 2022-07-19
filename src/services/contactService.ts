@@ -1,50 +1,40 @@
-//import useAxiosPrivate from "./hooks/useAxiosprivate";
-import { Contact } from "../models/contact";
-import axios from "axios";
-require("dotenv").config();
+import { IContact } from "../interfaces/contact";
+import axiosPrivate from "api/axiosPrivate";
+import { AxiosResponse } from "axios";
+const contactsUrl = `${process.env.REACT_APP_URL}/contacts`;
 
-const apiBaseUrl = `${process.env.REACT_APP_API}/contacts`;
-
-const privateHeaderOptions = {
-  "access-token": `${localStorage.getItem("access-token")}`,
+const SaveContact = async (contact): Promise<AxiosResponse> => {
+  return await axiosPrivate.post(contactsUrl, contact as IContact);
 };
 
-export const ContactService = () => {
-  const privateInstance = axios.create({
-    headers: privateHeaderOptions,
-    withCredentials: true,
-  });
-
-  const saveContact = async (contact) => {
-    return await privateInstance.post(apiBaseUrl, contact as Contact);
-  };
-
-  const updateContact = async (
-    id: number,
-    contact: Contact
-  ): Promise<Response> => {
-    return await privateInstance.put(apiBaseUrl + "/" + id, contact as Contact);
-  };
-
-  const getContactList = async (): Promise<Response> => {
-    return await privateInstance.get(apiBaseUrl);
-  };
-
-  const getContactById = async (
-    id: number,
-    contact: Contact
-  ): Promise<Contact> => {
-    return await privateInstance.put(apiBaseUrl + "/" + id, contact as Contact);
-  };
-
-  const deleteContactById = async (id: number): Promise<Response> => {
-    return await privateInstance.delete(apiBaseUrl + "/" + id);
-  };
-  return {
-    saveContact,
-    updateContact,
-    getContactList,
-    getContactById,
-    deleteContactById,
-  };
+const UpdateContact = async (
+  id: number,
+  contact: IContact
+): Promise<AxiosResponse<IContact>> => {
+  return await axiosPrivate.put(contactsUrl + "/" + id, contact as IContact);
 };
+
+const GetContactList = async (): Promise<AxiosResponse> => {
+  return await axiosPrivate.get(contactsUrl);
+};
+
+const GetContactById = async (
+  id: number,
+  contact: IContact
+): Promise<AxiosResponse<IContact>> => {
+  return await axiosPrivate.put(contactsUrl + "/" + id, contact as IContact);
+};
+
+const DeleteContactById = async (id: number): Promise<AxiosResponse> => {
+  return await axiosPrivate.delete(contactsUrl + "/" + id);
+};
+
+const contactService = {
+  SaveContact,
+  UpdateContact,
+  GetContactList,
+  GetContactById,
+  DeleteContactById,
+};
+
+export default contactService;

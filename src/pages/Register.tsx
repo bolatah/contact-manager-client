@@ -4,10 +4,10 @@ import FormControl from "@mui/material/FormControl";
 import { useNavigate, useLocation } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import { ToastContainer } from "react-toastify";
-import { User } from "../models/user";
-//import useAuth from "../services/hooks/useAuth";
-import { UserService } from "../services/userService";
+import { IUser } from "../interfaces/user";
+import userService from "../services/userService";
 import { showToast } from "../repository/utils";
+import { AxiosError } from "axios";
 
 type StateType = {
   path: string;
@@ -15,38 +15,37 @@ type StateType = {
 
 const Register = () => {
   const navigate = useNavigate();
-  const service = UserService();
-  //const { authed } = useAuth();
   const { state } = useLocation();
 
   const handleRegister = async (e: any) => {
     e.preventDefault();
- 
-    const formData = new FormData(e.currentTarget);
 
+    const formData = new FormData(e.currentTarget);
 
     let postData = {} as any;
     formData.forEach((value, key) => {
       postData[key] = value;
     });
 
-    if(postData.confirmPassword !== postData.password){
+    if (postData.confirmPassword !== postData.password) {
       showToast("error", "password don't match");
       return;
     }
 
-    console.log("register", e.currentTarget, formData , postData);
-
-    let res = await service.saveUser(postData as User);
- 
-      if (res.status === 201) {
+    try {
+      let resp = await userService.SaveUser(postData as IUser);
+      if (resp.status === 201) {
         showToast("success", `${postData["username"]} is registered.`);
         setTimeout(() => {
-          // setAuthed(true);
           navigate((state as StateType)?.path || "/login");
         }, 2000);
+      } else {
+        showToast("error", "username already exists");
       }
-      showToast("error", `User already exists.`); 
+    } catch (err) {
+      const error = err as Error | AxiosError;
+      showToast("error", error.message);
+    }
   };
   return (
     <>

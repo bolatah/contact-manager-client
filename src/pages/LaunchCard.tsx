@@ -7,11 +7,21 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
 
-import Login from "../components/login";
+import Login from "../components/Login";
+import useRefreshToken from "hooks/useRefreshToken";
+import userService from "services/userService";
 
 const imageURL = process.env.REACT_APP_IMAGE_URL;
 
 export default function LaunchCard() {
+  const refresh = useRefreshToken();
+  const test = async () => {
+    let resp = await userService.HandleTest();
+    if (resp) {
+      console.log(resp);
+    }
+  };
+
   return (
     <Card /* sx={{ maxWidth: 345 }} */>
       <CardMedia component="img" height="140" image={imageURL} />
@@ -33,6 +43,20 @@ export default function LaunchCard() {
       </CardContent>
       <CardActions>
         <Login />
+        <br />
+        <Button
+          onClick={() => refresh()}
+          style={{ textTransform: "none", fontSize: "1.2rem" }}
+        >
+          Refresh
+        </Button>
+        <br />
+        <Button
+          onClick={test}
+          style={{ textTransform: "none", fontSize: "1.2rem" }}
+        >
+          Test
+        </Button>
       </CardActions>
     </Card>
   );

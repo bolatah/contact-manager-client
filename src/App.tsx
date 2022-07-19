@@ -1,55 +1,70 @@
-import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
+import {
+  initialUserState,
+  UserContextProvider,
+  UserReducer,
+} from "./context/userContext";
 import { ContactForm } from "./pages/ContactForm";
 import { ContactList } from "./pages/ContactList";
 import ContactManagerApp from "./pages/ContactManagerApp";
 import LaunchCard from "./pages/LaunchCard";
 import Register from "./pages/Register";
-import RequireAuth from "./components/RequireAuth";
-// import PersistLogin from "./components/PersistLogin";
+import PersistLogin from "./components/PersistLogin";
+import AuthRoute from "./components/AuthRoute";
+import Test from "pages/Test";
+import WithAxiosPrivate from "hooks/useAxiosPrivate";
 
-function App() {
-  return (
-    <React.StrictMode>
-      <BrowserRouter>
-        <Routes>
-          {/*  Public Routes */}
-          <Route path="/" element={<LaunchCard />} />
-          <Route path="/register" element={<Register />} />
-
-          {/* Private Routes */}
-
-          <Route
-            path="/contactManagerApp"
-            element={
-              <RequireAuth>
-                <ContactManagerApp />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/form"
-            element={
-              <RequireAuth>
-                <ContactForm />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/list"
-            element={
-              <RequireAuth>
-                <ContactList />
-              </RequireAuth>
-            }
-          />
-
-          {/* catch all */}
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </BrowserRouter>
-    </React.StrictMode>
+const App = () => {
+  const [userState, userDispatch] = React.useReducer(
+    UserReducer,
+    initialUserState
   );
-}
 
+  return (
+    <UserContextProvider value={{ userState, userDispatch }}>
+      <WithAxiosPrivate>
+        <BrowserRouter>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<LaunchCard />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/test" element={<Test />} />
+            <Route path="*" element={<LaunchCard />} />
+
+            {/* Private Routes */}
+            <Route element={<PersistLogin />}>
+              <Route
+                path="/contactManagerApp"
+                element={
+                  <AuthRoute>
+                    <ContactManagerApp />
+                  </AuthRoute>
+                }
+              />
+
+              <Route
+                path="/form"
+                element={
+                  <AuthRoute>
+                    <ContactForm />
+                  </AuthRoute>
+                }
+              />
+
+              <Route
+                path="/list"
+                element={
+                  <AuthRoute>
+                    <ContactList />
+                  </AuthRoute>
+                }
+              />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </WithAxiosPrivate>
+    </UserContextProvider>
+  );
+};
 export default App;
