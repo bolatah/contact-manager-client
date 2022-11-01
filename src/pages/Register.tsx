@@ -1,13 +1,14 @@
-import React from "react";
+import { AxiosError } from "axios";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import { useNavigate, useLocation } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import { ToastContainer } from "react-toastify";
 import { IUser } from "../interfaces/user";
-import userService from "../services/userService";
 import { showToast } from "../repository/utils";
-import { AxiosError } from "axios";
+import axiosPublic from "../api/axiosPublic";
+
+const url = `${process.env.REACT_APP_URL}/users`;
 
 type StateType = {
   path: string;
@@ -17,7 +18,7 @@ const Register = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
 
-  const handleRegister = async (e: any) => {
+  const handleRegister = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
@@ -29,12 +30,10 @@ const Register = () => {
 
     if (postData.confirmPassword !== postData.password) {
       showToast("error", "password don't match");
-      return;
     }
-
     try {
-      let resp = await userService.SaveUser(postData as IUser);
-      if (resp.status === 201) {
+      let resp = await axiosPublic.post(`${url}/register`, postData as IUser);
+      if (resp.status === 200) {
         showToast("success", `${postData["username"]} is registered.`);
         setTimeout(() => {
           navigate((state as StateType)?.path || "/login");

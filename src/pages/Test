@@ -1,0 +1,61 @@
+/* import { render } from "@testing-library/react";
+import {
+  initialUserState,
+  UserContext,
+  UserReducer,
+} from "context/userContext";
+import React, { useReducer } from "react";
+
+const Test = () => {
+  const [userState, userDispatch] = useReducer(UserReducer, initialUserState);
+  // const { user, accessToken } = React.useContext(UserContext).userState;
+  const handleLogin = (e) => {
+    const accessToken = localStorage.getItem("accessToken") || "";
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    let postFormData = {} as any;
+    formData.forEach((value, key) => {
+      postFormData[key] = value;
+    });
+    userDispatch({
+      type: "login",
+      payload: { user: postFormData, accessToken: accessToken },
+    });
+    console.log(
+      userDispatch({
+        type: "login",
+        payload: { user: postFormData, accessToken: accessToken },
+      })
+    );
+    render(<p> user: {postFormData.username}</p>);
+  };
+
+  return (
+    <UserContext.Provider value={{ userState, userDispatch }}>
+      <form onSubmit={handleLogin}>
+        <input
+          type="text"
+          id="Username"
+          name="username"
+          placeholder="Name"
+          required
+          autoComplete="off"
+        />
+        <input
+          type="password"
+          id="Email"
+          name="password"
+          placeholder="password"
+          required
+          autoComplete="off"
+        />
+        <span>
+          <button type="submit">Login</button>
+        </span>
+      </form>
+    </UserContext.Provider>
+  );
+};
+export default Test;
+ */

@@ -20,10 +20,8 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import { ToastContainer } from "react-toastify";
 import { showToast } from "repository/utils";
-import userService from "../services/userService";
-import { UserContext, initialUserState } from "../context/userContext";
+import { UserContext } from "context/userContext";
 import { useContext } from "react";
-import { AxiosError } from "axios";
 
 const drawerWidth = 240;
 
@@ -78,30 +76,21 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export default function ContactManagerApp() {
   const [open, setOpen] = React.useState(false);
-  const userContext = useContext(UserContext);
   const theme = useTheme();
-  const navigate = useNavigate();
+  const userContext = useContext(UserContext);
 
-  const Logout = async () => {
-    try {
-      let resp = await userService.LogoutUser();
-      if (resp) {
-        userContext.userDispatch({
-          type: "logout",
-          payload: initialUserState,
-        });
-        showToast("success", "You are logged out");
-        setTimeout(() => {
-          navigate("/launchCard");
-        }, 2000);
-      }
-    } catch (err) {
-      const error = err as Error | AxiosError;
-      console.log(error);
-      showToast("error", "Logout is not successful");
-    }
-    // window.localStorage.removeItem("accessToken");
-    // window.localStorage.removeItem("refreshToken");
+  const Logout = () => {
+    showToast("success", "You are logged out");
+    setTimeout(() => {
+      userContext.userDispatch({
+        type: "logout",
+        payload: {
+          username: "",
+          accessToken: "",
+          isLoggedIn: false,
+        },
+      });
+    }, 2000);
   };
 
   const handleDrawerOpen = () => {
@@ -138,7 +127,7 @@ export default function ContactManagerApp() {
               Contact Manager
             </Typography>
 
-            <Button color="inherit" component={Link} to="/" onClick={Logout}>
+            <Button color="inherit" onClick={Logout}>
               Log Out
             </Button>
           </Toolbar>
@@ -181,6 +170,7 @@ export default function ContactManagerApp() {
             </ListItem>
           </List>
         </Drawer>
+
         <Main open={open}>
           <DrawerHeader />
         </Main>

@@ -6,28 +6,33 @@ import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import { ToastContainer } from "react-toastify";
 
-import contactService from "../services/contactService";
 import { showToast } from "repository/utils";
 import { AxiosError } from "axios";
+import useAxiosPrivate from "api/axiosPrivate";
+import { IContactFormData } from "interfaces/contact";
 
 export const ContactForm = () => {
+  const url = `${process.env.REACT_APP_URL}/contacts`;
   const navigate = useNavigate();
-  const handleFormSubmit = async (e) => {
+  const axiosInstance = useAxiosPrivate();
+
+  const handleFormSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = e.target;
-    const formData = new FormData(form);
+
+    const formData = new FormData(e.target);
 
     try {
-      let resp = await contactService.SaveContact(formData);
+      let resp = await axiosInstance.post(url, formData as IContactFormData);
+
       if (resp) {
         showToast("success", `Contact will be added.`);
+
         setTimeout(() => {
           navigate("/list");
         }, 2000);
       }
     } catch (err) {
-      const error = err as Error | AxiosError;
-      console.log(error);
+      const error = err as AxiosError;
       showToast("error", error.message);
     }
   };
@@ -93,7 +98,7 @@ export const ContactForm = () => {
           Submit
         </Button>
       </FormControl>
-      <ToastContainer position="bottom-left" autoClose={2000} />
+      <ToastContainer />
     </Box>
   );
 };

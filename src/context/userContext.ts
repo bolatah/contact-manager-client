@@ -1,50 +1,43 @@
-import { defaultAccessToken, defaultUser, IUser } from "../interfaces/user";
-import { Dispatch, createContext, useEffect } from "react";
-//import useRefreshToken from "hooks/useRefreshToken";
-import userService from "services/userService";
-export interface IUserState {
-  user: IUser;
+import { defaultAccessToken } from "../interfaces/user";
+import { Dispatch, createContext } from "react";
+
+interface ILoginState {
+  username: string;
   accessToken: string;
-  persist?: boolean;
+  isLoggedIn: boolean;
+  // persist?: boolean;
 }
 
-export interface IUserActions {
-  type: "login" | "logout" | "persist";
-  payload: { user: IUser; accessToken: string; persist?: boolean };
+interface ILoginAction {
+  type: "login" | "logout";
+  payload: { username: string; accessToken: string; isLoggedIn: boolean };
 }
 
-export const initialUserState: IUserState = {
-  user: defaultUser,
+interface IUserContext {
+  userState: ILoginState;
+  userDispatch: Dispatch<ILoginAction>;
+}
+
+export const initialUserState: ILoginState = {
+  username: "",
   accessToken: defaultAccessToken,
-  persist: false,
+  isLoggedIn: false,
 };
 
-export const UserReducer = (state: IUserState, action: IUserActions) => {
-  //const refresh = useRefreshToken();
-  let user = action.payload.user;
-  let accessToken = action.payload.accessToken;
-  let persist = action.payload.persist;
+export const UserReducer = (state: ILoginState, action: ILoginAction) => {
+  let { username, accessToken, isLoggedIn } = action.payload;
 
   switch (action.type) {
     case "login":
-      return { user, accessToken };
+      return { username, accessToken, isLoggedIn };
     case "logout":
       return initialUserState;
-    case "persist":
-      localStorage.setItem("persist", persist ? "true" : "false");
-      // refresh();
-      return { user, accessToken, persist };
     default:
       return state;
   }
 };
 
-export interface IUserContextProps {
-  userState: IUserState;
-  userDispatch: Dispatch<IUserActions>;
-}
-
-export const UserContext = createContext<IUserContextProps>({
+export const UserContext = createContext<IUserContext>({
   userState: initialUserState,
   userDispatch: () => {},
 });

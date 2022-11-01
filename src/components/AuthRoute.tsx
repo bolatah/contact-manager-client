@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { UserContext } from "../context/userContext";
 
 export interface IAuthRouteProps {
@@ -8,10 +8,9 @@ export interface IAuthRouteProps {
 
 const AuthRoute = (props: IAuthRouteProps) => {
   const userContext = useContext(UserContext);
-  const navigate = useNavigate();
   const location = useLocation();
   const { children } = props;
-  return userContext.userState?.accessToken !== "" ? (
+  return userContext.userState.accessToken !== "" ? (
     <>{children}</>
   ) : (
     <Navigate to="/" state={{ from: location }} replace />

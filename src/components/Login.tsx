@@ -1,13 +1,15 @@
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import { ToastContainer } from "react-toastify";
 import { showToast } from "repository/utils";
-import userService from "../services/userService";
-import React, { useContext, useEffect, useState } from "react";
-import { UserContext, initialUserState } from "../context/userContext";
+import axiosPublic from "api/axiosPublic";
+import React, { useContext } from "react";
+import { UserContext } from "../context/userContext";
 import { AxiosError } from "axios";
+
+const url = `${process.env.REACT_APP_URL}/users`;
 
 const Login = () => {
   const userContext = useContext(UserContext);
@@ -23,37 +25,30 @@ const Login = () => {
     });
 
     try {
-      let resp = await userService.LoginUser(
-        postFormData.username,
-        postFormData.password
-      );
+      let resp = await axiosPublic.post(`${url}/login`, {
+        username: postFormData.username,
+        password: postFormData.password,
+      });
+
       if (resp) {
         userContext.userDispatch({
           type: "login",
           payload: {
-            user: resp.data.user,
-            accessToken: resp.data.accessToken,
+            username: resp.data.username,
+            accessToken: resp.data.token,
+            isLoggedIn: true,
           },
         });
+
         showToast("success", "You are logged in");
         setTimeout(() => {
           navigate("/contactManagerApp");
         }, 1000);
       }
     } catch (err) {
-      const error = err as Error | AxiosError;
-      console.log(error);
+      const error = err as AxiosError;
       showToast("error", error.message);
     }
-  };
-  const togglePersist = (props) => {
-    userContext.userDispatch({
-      type: "persist",
-      payload: {
-        ...props,
-        persist: !userContext.userState.persist,
-      },
-    });
   };
 
   return (
@@ -83,14 +78,14 @@ const Login = () => {
             autoComplete="off"
           />{" "}
           <div>
-            <input
+            {/*  <input
               type="checkbox"
               id="RememberMe"
               name="rememberMe"
               onChange={togglePersist}
               autoComplete="off"
             />
-            <label htmlFor="RememberMe">Remember Me</label>
+            <label htmlFor="RememberMe">Remember Me</label> */}
           </div>
           <span>
             <Button type="submit">Login</Button>

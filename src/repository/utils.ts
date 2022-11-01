@@ -15,7 +15,7 @@ const defaultPosition = toast.POSITION.BOTTOM_CENTER;
 
 export const showToast = (
   type = "success",
-  msg,
+  msg: string,
   autoClose = 2000,
   className = "primaryColor",
   position = defaultPosition
